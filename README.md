@@ -24,7 +24,7 @@ Define your application settings:
     "port": 3000
   },
   "database": {
-    "timeout": "%d{DB_TIMEOUT:1000}"
+    "timeout": "%d{DB_TIMEOUT:1000}",
     "connectionString": "dbname=testdb sslmode=#s{DB_USE_SSL:true}"
   }
 }
