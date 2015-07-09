@@ -6,11 +6,11 @@ interpolate environment variables with default values.
 
 ## Installation
 
-**Get it**
+Get it
 
 `go get github.com/appriser/compadre`
 
-**Include it**
+Include it
 
 `import "github.com/appriser/compadre"`
 
