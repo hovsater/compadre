@@ -1,0 +1,13 @@
+{
+  "int": 3000,
+  "intWithDefault": "#d{DB_PORT:4000}",
+  "intWithoutDefault": "#d{DB_PORT}",
+  "bool": false,
+  "boolWithDefault": "#t{DB_SSL:true}",
+  "boolWithoutDefault": "#t{DB_SSL}",
+  "string": "Hello world!",
+  "stringWithDefault": "#s{DB_USER:KevinSjoberg}",
+  "stringWithoutDefault": "#s{DB_USER}",
+  "stringWithEndExpression": "user=admin port=#d{DB_PORT:3000}",
+  "stringWithMultipleExpressions": "user=#s{DB_USER} port=#d{DB_PORT:3000}"
+}
