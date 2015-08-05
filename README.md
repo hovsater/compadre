@@ -8,27 +8,28 @@ interpolate environment variables with default values.
 
 Get it
 
-`go get github.com/appriser/compadre`
+`go get github.com/KevinSjoberg/compadre`
 
 Include it
 
-`import "github.com/appriser/compadre"`
+`import "github.com/KevinSjoberg/compadre"`
 
 ## Usage
 
 Define your application settings:
 
-```json
+```
 {
   "app": {
     "port": 3000
   },
   "database": {
-    "timeout": "#d{DB_TIMEOUT:1000}",
-    "connectionString": "dbname=testdb sslmode=#s{DB_USE_SSL:true}"
+    "timeout": {{ i "DB_TIMEOUT:1000" }},
+    "connectionString": {{ "dbname=testdb sslmode=%s" | s "DB_SSL:true" }}
   }
 }
 ```
+
 Describe your configuration object using structs:
 
 ```go

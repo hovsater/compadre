@@ -17,7 +17,7 @@ type appconfig struct {
 
 func TestRead(t *testing.T) {
 	var c appconfig
-	if err := Read("test_fixtures/config.json", &c); err != nil {
+	if err := Read("test_fixtures/config.json.compadre", &c); err != nil {
 		t.Errorf("Failed to read config: %s", err)
 	}
 
@@ -37,7 +37,7 @@ func TestReadFromEnv(t *testing.T) {
 	os.Setenv("DB_USER", "admin")
 
 	var c appconfig
-	if err := Read("test_fixtures/config.json", &c); err != nil {
+	if err := Read("test_fixtures/config.json.compadre", &c); err != nil {
 		t.Errorf("Failed to read config: %s", err)
 	}
 
