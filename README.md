@@ -1,4 +1,4 @@
-# Compadre [![Build Status](https://travis-ci.org/appriser/compadre.svg?branch=master)](https://travis-ci.org/appriser/compadre)
+# Compadre [![Build Status](https://travis-ci.org/KevinSjoberg/compadre.svg?branch=master)](https://travis-ci.org/KevinSjoberg/compadre)
 Compadre is a lightweight Go package for application configuration using
 [JSON](http://json.org/). It provides a thin layer over
 [encoding/json](http://golang.org/pkg/encoding/json/) allowing you to
