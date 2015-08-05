@@ -1,18 +1,20 @@
 package compadre
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
-	"regexp"
 	"strconv"
 	"strings"
+	"text/template"
 )
 
-const (
-	lineMatcher       = "\"[^\"]*#[dts]{.+}\""
-	expressionMatcher = "#([dts]){([^:}]+)(?::((?:\\}|[^}])+))?}"
-)
+var funcMap = template.FuncMap{
+	"i": intParse,
+	"s": stringParse,
+}
 
 func Read(filename string, c interface{}) error {
 	content, err := ioutil.ReadFile(filename)
@@ -21,53 +23,52 @@ func Read(filename string, c interface{}) error {
 		return err
 	}
 
-	lines := regexp.MustCompile(lineMatcher)
+	t := template.Must(template.New("compadreJSON").Funcs(funcMap).Parse(string(content)))
 
-	content = []byte(lines.ReplaceAllStringFunc(string(content), func(s string) string {
-		expressions := regexp.MustCompile(expressionMatcher).FindAllStringSubmatch(s, -1)
+	var output bytes.Buffer
 
-		if len(expressions) == 1 && strconv.Quote(expressions[0][0]) == s {
-			return build(expressions[0])
-		} else {
-			return buildMultiple(s, expressions)
-		}
-	}))
+	if err = t.Execute(&output, nil); err != nil {
+		return err
+	}
 
-	if err := json.Unmarshal(content, c); err != nil {
+	if err = json.Unmarshal(output.Bytes(), c); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func build(e []string) string {
-	v := stringDefault(os.Getenv(e[2]), e[3])
-	return typeDefault(e[1], v)
-}
+func parseExp(exp string) string {
+	parts := make([]string, 2)
 
-func buildMultiple(value string, exps [][]string) string {
-	for _, e := range exps {
-		v := stringDefault(os.Getenv(e[2]), e[3])
-		value = strings.Replace(value, e[0], v, 1)
+	for i, p := range strings.SplitN(exp, ":", 2) {
+		parts[i] = p
 	}
 
-	return value
-}
-
-func typeDefault(t string, v string) string {
-	switch t {
-	case "d":
-		return stringDefault(v, "0")
-	case "t":
-		return stringDefault(v, "false")
-	default:
-		return strconv.Quote(v)
+	if os.Getenv(parts[0]) == "" {
+		return parts[1]
+	} else {
+		return os.Getenv(parts[0])
 	}
 }
 
-func stringDefault(value string, defaultValue string) string {
-	if value == "" {
-		value = defaultValue
+func intParse(exp string) int {
+	value := parseExp(exp)
+	intValue, _ := strconv.Atoi(value)
+	return intValue
+}
+
+func stringParse(exps ...string) string {
+	if len(exps) == 1 {
+		return strconv.Quote(parseExp(exps[0]))
+	} else {
+		format := exps[len(exps)-1]
+		values := make([]interface{}, len(exps)-1)
+
+		for i, exp := range exps[:len(exps)-1] {
+			values[i] = parseExp(exp)
+		}
+
+		return strconv.Quote(fmt.Sprintf(format, values...))
 	}
-	return value
 }
