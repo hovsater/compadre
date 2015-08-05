@@ -66,9 +66,5 @@ func main() {
 ## Details
 
 Compadre empowers your standard JSON file by allowing you to define expressions
-that expand during runtime.
-
-Expressions can be of type: int (`#d`), bool (`#t`) and string (`#s`) and have
-a default value, but it's not required. If a given environment variable is
-empty and no default value is set, it will use the type default which is `0`
-for int, `false` for bool and `""` for string.
+that expand during runtime. Expressions are defined as in the [text/template
+package](http://golang.org/pkg/text/template/).
